@@ -2,6 +2,7 @@ import sys
 import pygame
 
 from scripts.entities import PhysicsEntity
+from scripts.utils import load_image
 
 class Game:
     def __init__(self):
@@ -11,6 +12,8 @@ class Game:
         pygame.display.set_caption("Ninja Game")
         # Create screen window and set the resolution
         self.screen = pygame.display.set_mode((640, 480))
+        # Render images onto display
+        self.display = pygame.Surface((320,240))
 
         # Set game clock to 60 FPS
         self.clock = pygame.time.Clock()
@@ -26,15 +29,19 @@ class Game:
 
         self.movement = [False, False]
 
+        self.assets = {
+            'player' : load_image('entities/player.png')
+        }
+
         self.player = PhysicsEntity(self, 'player', (50,50), (8,15))
 
 
     def run(self):
         while True:
-            self.screen.fill((14,219,248))
+            self.display.fill((14,219,248))
 
             self.player.update((self.movement[1] - self.movement[0], 0))
-            self.player.render(self.screen)
+            self.player.render(self.display)
 
             # Demonstrational code for collision
             # 
@@ -64,6 +71,7 @@ class Game:
                     if event.key == pygame.K_RIGHT or event.key ==   pygame.K_d:
                         self.movement[1] = False
             
+            self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()))
             pygame.display.update()
             self.clock.tick(60)
 
