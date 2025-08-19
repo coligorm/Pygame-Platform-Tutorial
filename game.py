@@ -2,7 +2,8 @@ import sys
 import pygame
 
 from scripts.entities import PhysicsEntity
-from scripts.utils import load_image
+from scripts.utils import load_image, load_multiple_images
+from scripts.tilemap import Tilemap
 
 class Game:
     def __init__(self):
@@ -30,15 +31,24 @@ class Game:
         self.movement = [False, False]
 
         self.assets = {
+            'decor': load_multiple_images('tiles/decor'),
+            'large_decor': load_multiple_images('tiles/large_decor'),
+            'grass': load_multiple_images('tiles/grass'),
+            'stone': load_multiple_images('tiles/stone'),
             'player' : load_image('entities/player.png')
         }
 
         self.player = PhysicsEntity(self, 'player', (50,50), (8,15))
 
+        self.tilemap = Tilemap(self)
+
 
     def run(self):
         while True:
             self.display.fill((14,219,248))
+
+            # Note: Render order is important. We want to render the tiles before the player as the player is ontop of the tiles.
+            self.tilemap.render(self.display)
 
             self.player.update((self.movement[1] - self.movement[0], 0))
             self.player.render(self.display)

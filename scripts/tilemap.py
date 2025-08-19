@@ -1,0 +1,23 @@
+class Tilemap:
+    def __init__(self, game, tile_size=16):
+        self.game = game
+        self.tile_size = tile_size
+        self.tilemap = {}
+        self.offgrid_tiles = []
+
+        for i in range(10):
+            # Creating a dictionary of a horizontal line of grass tiles from 3 on x coord
+            self.tilemap[str(3 + i) + ';10'] = {'type' : 'grass', 'variant' : 1, 'pos' : (3 + i, 10)}
+            # Creating a dictionary of a verticle line of stone tiles from 3 on x coord
+            self.tilemap['10;' + str(5 + i)] = {'type' : 'stone', 'variant' : 1, 'pos' : (10, 5 + i)}
+
+
+    def render(self, surface):
+        # Render the offgrid tile first, as they are in the background
+        for tile in self.offgrid_tiles:
+            surface.blit(self.game.assets[tile['type']][tile['variant']], tile['pos'])
+    
+        for location in self.tilemap:
+            tile = self.tilemap[location]
+            surface.blit(self.game.assets[tile['type']][tile['variant']], (tile['pos'][0] * self.tile_size, tile['pos'][1] * self.tile_size))
+
