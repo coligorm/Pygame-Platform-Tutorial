@@ -50,7 +50,7 @@ class Game:
             # Note: Render order is important. We want to render the tiles before the player as the player is ontop of the tiles.
             self.tilemap.render(self.display)
 
-            self.player.update((self.movement[1] - self.movement[0], 0))
+            self.player.update(self.tilemap, (self.movement[1] - self.movement[0], 0))
             self.player.render(self.display)
 
             # Demonstrational code for collision
