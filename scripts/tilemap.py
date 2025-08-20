@@ -19,7 +19,7 @@ class Tilemap:
         tiles = []
         tile_loc = (int(pos[0] // self.tile_size), int(pos[1] // self.tile_size))
         for offset in NEIGHBOUR_OFFSETS:
-            check_loc = str(tile_loc[0] + offset[0]) + ';' + str(tile_loc[0] + offset[0]) + ';'
+            check_loc = str(tile_loc[0] + offset[0]) + ';' + str(tile_loc[1] + offset[1])
             if check_loc in self.tilemap:
                 tiles.append(self.tilemap[check_loc])
         return tiles
@@ -28,7 +28,7 @@ class Tilemap:
         rects = []
         for tile in self.tiles_around(pos):
             if tile['type'] in PHYSICS_TILES:
-                rects.append(pygame.Rect(tile['pos'][0] * self.tile_size), tile['pos'][1] * self.tile_size, self.tile_size, self.tile_size)
+                rects.append(pygame.Rect(tile['pos'][0] * self.tile_size, tile['pos'][1] * self.tile_size, self.tile_size, self.tile_size))
         return rects
 
     def render(self, surface):

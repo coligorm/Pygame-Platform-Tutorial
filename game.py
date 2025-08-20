@@ -53,6 +53,9 @@ class Game:
             self.player.update(self.tilemap, (self.movement[1] - self.movement[0], 0))
             self.player.render(self.display)
 
+            # For debugging:
+            # print(self.tilemap.tiles_around(self.player.pos))
+
             # Demonstrational code for collision
             # 
             # img_r = pygame.Rect(self.img_pos[0], self.img_pos[1], self.img.get_width(), self.img.get_height())
