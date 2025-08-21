@@ -7,11 +7,14 @@ class PhysicsEntity:
         self.pos = list(pos) # Converting iterable into list, each entity will have its own list
         self.size = size
         self.velocity = [0,0]
+        self.collisions = {'up': False, 'down': False, 'right': False, 'left': False}
 
     def rect(self):
         return pygame.Rect(self.pos[0], self.pos[1], self.size[0], self.size[1])
 
     def update(self, tilemap, movement=(0,0)):
+        # Resetting the collisions every frame
+        self.collisions = {'up': False, 'down': False, 'right': False, 'left': False}
         # Creating a vector to represent movement, so if gravity is being applied it is taken into account when moving up and down
         frame_movement = (movement[0] + self.velocity[0], movement[1] + self.velocity[1])
 
@@ -23,8 +26,10 @@ class PhysicsEntity:
             if entity_rect.colliderect(rect):
                 if frame_movement[0] > 0:
                     entity_rect.right = rect.left
+                    self.collisions['right'] = True
                 if frame_movement[0] < 0:
                     entity_rect.left = rect.right
+                    self.collisions['left'] = True
                 self.pos[0] = entity_rect.x
 
         self.pos[1] += frame_movement[1]
@@ -33,13 +38,19 @@ class PhysicsEntity:
             if entity_rect.colliderect(rect):
                 if frame_movement[1] > 0:
                     entity_rect.bottom = rect.top
+                    self.collisions['down'] = True
                 if frame_movement[1] < 0:
                     entity_rect.top = rect.bottom
+                    self.collisions['up'] = True
                 self.pos[1] = entity_rect.y
 
         # Applying terminal velocity to cap the gravity at a speed of 5
         # Note: On the game screen 0,0 is the top left, therefore, positive y is going down on the screen
         self.velocity[1] = min(5, self.velocity[1] + 0.1)
+
+        # Reset y-axis velocity (gravity) after collision
+        if self.collisions['down'] or self.collisions['up']:
+            self.velocity[1] = 0
 
     def render(self, surface):
         surface.blit(self.game.assets['player'], self.pos)
