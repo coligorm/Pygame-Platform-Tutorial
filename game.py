@@ -31,11 +31,11 @@ class Game:
         self.movement = [False, False]
 
         self.assets = {
+            'player' : load_image('entities/player.png'),
             'decor': load_multiple_images('tiles/decor'),
-            'large_decor': load_multiple_images('tiles/large_decor'),
             'grass': load_multiple_images('tiles/grass'),
-            'stone': load_multiple_images('tiles/stone'),
-            'player' : load_image('entities/player.png')
+            'large_decor': load_multiple_images('tiles/large_decor'),
+            'stone': load_multiple_images('tiles/stone')
         }
 
         self.player = PhysicsEntity(self, 'player', (50,50), (8,15))
