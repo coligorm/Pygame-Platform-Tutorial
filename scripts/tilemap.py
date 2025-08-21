@@ -11,11 +11,11 @@ class Tilemap:
 
         for i in range(10):
             # Creating a dictionary of a horizontal line of grass tiles from 3 on x coord
-            self.tilemap[str(3 + i) + ';10'] = {'type' : 'grass', 'variant' : 1, 'pos' : (3 + i, 10)}
+            self.tilemap[str(3 + i) + ';10'] = {'type': 'grass', 'variant': 1, 'pos': (3 + i, 10)}
             # Creating a dictionary of a verticle line of stone tiles from 3 on x coord
-            self.tilemap['10;' + str(5 + i)] = {'type' : 'stone', 'variant' : 1, 'pos' : (10, 5 + i)}
+            self.tilemap['10;' + str(5 + i)] = {'type': 'stone', 'variant': 1, 'pos': (10, 5 + i)}
     
-    def tiles_around(self,pos):
+    def tiles_around(self, pos):
         tiles = []
         tile_loc = (int(pos[0] // self.tile_size), int(pos[1] // self.tile_size))
         for offset in NEIGHBOUR_OFFSETS:
@@ -24,7 +24,7 @@ class Tilemap:
                 tiles.append(self.tilemap[check_loc])
         return tiles
     
-    def physics_rects_around(self,pos):
+    def physics_rects_around(self, pos):
         rects = []
         for tile in self.tiles_around(pos):
             if tile['type'] in PHYSICS_TILES:

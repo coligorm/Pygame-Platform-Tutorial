@@ -18,10 +18,8 @@ class PhysicsEntity:
         # Creating a vector to represent movement, so if gravity is being applied it is taken into account when moving up and down
         frame_movement = (movement[0] + self.velocity[0], movement[1] + self.velocity[1])
 
-        entity_rect = self.rect()
-
         self.pos[0] += frame_movement[0]
-        
+        entity_rect = self.rect()
         for rect in tilemap.physics_rects_around(self.pos):
             if entity_rect.colliderect(rect):
                 if frame_movement[0] > 0:
@@ -33,7 +31,7 @@ class PhysicsEntity:
                 self.pos[0] = entity_rect.x
 
         self.pos[1] += frame_movement[1]
-
+        entity_rect = self.rect()
         for rect in tilemap.physics_rects_around(self.pos):
             if entity_rect.colliderect(rect):
                 if frame_movement[1] > 0:

@@ -14,13 +14,11 @@ class Game:
         # Create screen window and set the resolution
         self.screen = pygame.display.set_mode((640, 480))
         # Render images onto display
-        self.display = pygame.Surface((320,240))
-
+        self.display = pygame.Surface((320, 240))
         # Set game clock to 60 FPS
         self.clock = pygame.time.Clock()
 
-        # Demonstrational code for collision
-        # 
+        # Demonstrational code for collision:
         # self.img = pygame.image.load('data/images/clouds/cloud_1.png')
         # self.img.set_colorkey((0,0,0))
 
@@ -38,14 +36,14 @@ class Game:
             'stone': load_multiple_images('tiles/stone')
         }
 
-        self.player = PhysicsEntity(self, 'player', (50,50), (8,15))
+        self.player = PhysicsEntity(self, 'player', (50, 50), (8, 15))
 
         self.tilemap = Tilemap(self)
 
 
     def run(self):
         while True:
-            self.display.fill((14,219,248))
+            self.display.fill((14, 219, 248))
 
             # Note: Render order is important. We want to render the tiles before the player as the player is ontop of the tiles.
             self.tilemap.render(self.display)
@@ -56,8 +54,7 @@ class Game:
             # For debugging:
             # print(self.tilemap.tiles_around(self.player.pos))
 
-            # Demonstrational code for collision
-            # 
+            # Demonstrational code for collision:
             # img_r = pygame.Rect(self.img_pos[0], self.img_pos[1], self.img.get_width(), self.img.get_height())
             # if img_r.colliderect(self.collision_area):
             #     pygame.draw.rect(self.screen, (0, 100, 255), self.collision_area)
@@ -75,18 +72,18 @@ class Game:
 
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_LEFT or event.key == pygame.K_a:
-                        self.movement[1] = True
-                    if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                         self.movement[0] = True
+                    if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
+                        self.movement[1] = True
                     if event.key == pygame.K_UP or event.key == pygame.K_w:
                         self.player.velocity[1] = -3
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_LEFT or event.key == pygame.K_a:
-                        self.movement[1] = False
-                    if event.key == pygame.K_RIGHT or event.key ==   pygame.K_d:
                         self.movement[0] = False
+                    if event.key == pygame.K_RIGHT or event.key ==   pygame.K_d:
+                        self.movement[1] = False
             
-            self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()))
+            self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0,0))
             pygame.display.update()
             self.clock.tick(60)
 
