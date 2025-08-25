@@ -40,16 +40,18 @@ class Game:
 
         self.tilemap = Tilemap(self)
 
+        self.scroll = [0,0]
+
 
     def run(self):
         while True:
             self.display.fill((14, 219, 248))
 
             # Note: Render order is important. We want to render the tiles before the player as the player is ontop of the tiles.
-            self.tilemap.render(self.display)
+            self.tilemap.render(self.display, offset=self.scroll)
 
             self.player.update(self.tilemap, (self.movement[1] - self.movement[0], 0))
-            self.player.render(self.display)
+            self.player.render(self.display, offset=self.scroll)
 
             # For debugging:
             # print(self.tilemap.tiles_around(self.player.pos))
