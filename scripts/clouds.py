@@ -14,7 +14,7 @@ class Cloud:
         # We multply by the depth so if a cloud if further away, when the camera scrolls, the depth is multiplied
         # By the offset in order to create a nice parallax effect
         render_pos = (self.pos[0] - offset[0] * self.depth, self.pos[1] - offset[1] * self.depth)
-        surface.blit(self.img, (render_pos[0] % (surface.get_width() + self.img.get_width()) - self.img.get_width()), (render_pos[1] % (surface.get_height() + self.img.get_height()) - self.img.get_height()))
+        surface.blit(self.img, (render_pos[0] % (surface.get_width() + self.img.get_width()) - self.img.get_width(), render_pos[1] % (surface.get_height() + self.img.get_height()) - self.img.get_height()))
 
 
 class Clouds:
@@ -22,7 +22,7 @@ class Clouds:
         self.clouds = []
 
         for i in range(count):
-            self.cloud.append(Cloud((random.random() * 99999, random.random() * 99999), random.choice(cloud_images), random.random() * 0.05 + 0.05, random.random() * 0.6 + 0.2))
+            self.clouds.append(Cloud((random.random() * 99999, random.random() * 99999), random.choice(cloud_images), random.random() * 0.05 + 0.05, random.random() * 0.6 + 0.2))
 
         # Sorting the clouds by depth arranges the clouds from closet to furthest helping the clouds display propely when rendering
         # as render order matters
