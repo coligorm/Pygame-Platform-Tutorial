@@ -4,6 +4,7 @@ import pygame
 from scripts.entities import PhysicsEntity
 from scripts.utils import load_image, load_multiple_images
 from scripts.tilemap import Tilemap
+from scripts.clouds import Clouds
 
 class Game:
     def __init__(self):
@@ -33,8 +34,12 @@ class Game:
             'decor': load_multiple_images('tiles/decor'),
             'grass': load_multiple_images('tiles/grass'),
             'large_decor': load_multiple_images('tiles/large_decor'),
-            'stone': load_multiple_images('tiles/stone')
+            'stone': load_multiple_images('tiles/stone'),
+            'background': load_image('background.png'),
+            'clouds' : load_multiple_images('clouds')
         }
+
+        self.clouds = Clouds(self.assets['clouds'], count=16)
 
         self.player = PhysicsEntity(self, 'player', (50, 50), (8, 15))
 
@@ -47,7 +52,7 @@ class Game:
 
     def run(self):
         while True:
-            self.display.fill((14, 219, 248))
+            self.display.blit(self.assets['background'], (0,0))
 
             # If we centered the camera on the player, the player would be positioned in the top left of the camera,
             # Due to how pygame renders images from top left.
@@ -58,6 +63,9 @@ class Game:
             self.scroll[0] += (self.player.rect().centerx -self.display.get_width() / 2 - self.scroll[0]) / 30
             self.scroll[1] += (self.player.rect().centery -self.display.get_height() / 2 - self.scroll[1]) / 30
             render_scroll = (int(self.scroll[0]), int(self.scroll[1]))
+
+            self.clouds.update()
+            self.clouds.render(self.display, offset=render_scroll)
 
             # Note: Render order is important. We want to render the tiles before the player as the player is ontop of the tiles.
             self.tilemap.render(self.display, offset=render_scroll)
