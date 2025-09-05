@@ -40,6 +40,8 @@ class Game:
 
         self.tilemap = Tilemap(self)
 
+        # Look at the scroll like the camera position
+        # We had this scroll as an offset to anything we render below while running the game
         self.scroll = [0,0]
 
 
@@ -47,11 +49,21 @@ class Game:
         while True:
             self.display.fill((14, 219, 248))
 
+            # If we centered the camera on the player, the player would be positioned in the top left of the camera,
+            # Due to how pygame renders images from top left.
+            # So here, we minus half the wdith of the display from the center in order to actually have the player in the centre
+            # The whole equation is finding where we want the camera to be (centered around the player) and adding to the scroll
+            # Adding the divide 30 at the end, makes the camera move quicker the further away the player is from the centre, and slows
+            # upon getting closer to the player to create a smooth scrolling camera
+            self.scroll[0] += (self.player.rect().centerx -self.display.get_width() / 2 - self.scroll[0]) / 30
+            self.scroll[1] += (self.player.rect().centery -self.display.get_height() / 2 - self.scroll[1]) / 30
+            render_scroll = (int(self.scroll[0]), int(self.scroll[1]))
+
             # Note: Render order is important. We want to render the tiles before the player as the player is ontop of the tiles.
-            self.tilemap.render(self.display, offset=self.scroll)
+            self.tilemap.render(self.display, offset=render_scroll)
 
             self.player.update(self.tilemap, (self.movement[1] - self.movement[0], 0))
-            self.player.render(self.display, offset=self.scroll)
+            self.player.render(self.display, offset=render_scroll)
 
             # For debugging:
             # print(self.tilemap.tiles_around(self.player.pos))
