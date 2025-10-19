@@ -65,8 +65,29 @@ class PhysicsEntity:
         if self.collisions['down'] or self.collisions['up']:
             self.velocity[1] = 0
             
-        self.aniamtion.update()
+        self.animation.update()
 
     def render(self, surface, offset=(0,0)):
         surface.blit(pygame.transform.flip(self.animation.img(), self.flip, False), (self.pos[0] - offset[0] + self.anim_offset[0], self.pos[1] - offset[1] + self.anim_offset[1]))
         # surface.blit(self.game.assets['player'], (self.pos[0] - offset[0], self.pos[1] - offset[1]))
+        
+class Player(PhysicsEntity):
+    def __init__(self, game, pos, size):
+        super().__init__(game, 'player', pos, size)
+        self.air_time = 0
+        
+    def update(self, tilemap, movement=(0, 0)):
+        super().update(tilemap, movement)
+        
+        self.air_time += 1
+        if self.collisions['down']:
+            self.air_time = 0
+            
+        if self.air_time > 4:
+            self.set_action('jump')
+        elif movement[0] != 0:
+            self.set_action('run')
+        else:
+            self.set_action('idle')
+    
+    

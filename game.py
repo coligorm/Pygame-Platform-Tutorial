@@ -1,7 +1,7 @@
 import sys
 import pygame
 
-from scripts.entities import PhysicsEntity
+from scripts.entities import PhysicsEntity, Player
 from scripts.utils import load_image, load_multiple_images, Animation
 from scripts.tilemap import Tilemap
 from scripts.clouds import Clouds
@@ -41,13 +41,13 @@ class Game:
             'player/idle' : Animation(load_multiple_images('entities/player/idle'), img_dur=6),
             'player/run' : Animation(load_multiple_images('entities/player/run'), img_dur=4),
             'player/jump' : Animation(load_multiple_images('entities/player/jump')),
-            'player/slide' : Animation(load_multiple_images('entitie/player/slide')),
-            'player/wall_slide' : Animation(load_multiple_images('entitie/player/wall_slide'))
+            'player/slide' : Animation(load_multiple_images('entities/player/slide')),
+            'player/wall_slide' : Animation(load_multiple_images('entities/player/wall_slide'))
         }
 
         self.clouds = Clouds(self.assets['clouds'], count=16)
 
-        self.player = PhysicsEntity(self, 'player', (50, 50), (8, 15))
+        self.player = Player(self, (50, 50), (8, 15))
 
         self.tilemap = Tilemap(self)
 
