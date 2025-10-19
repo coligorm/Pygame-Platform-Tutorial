@@ -435,3 +435,28 @@ Finally, import them into the game by creating a `self.clouds` and also `load_im
 ## Optimization
 
 [Chapter Link](https://www.youtube.com/watch?v=2gABYM5M0ww&t=106m43s)
+
+It is usually good practise to optimise your code early on, as it grows, we don't want the game to become slower and slower.
+Currenty, we render all of our tiles at once, a more effecient way is to render only the tiles we have on screen.
+Because our tiles are stored in a dictionary, it is easy to look-up the tile effecicently.
+
+We want two `for` loops to check every x pos and every y pos on the screen:
+`for x in range(offset[0] // self.tile_size, (offset[0] + surface.get_width()) // self.tile_size + 1):`
+Here we are:
+- Finding the top left side of the screen, by dividing the offset of the cameraby the tilesize (remember the offset is in pixels and the tilesize is in tile co-ordinates).
+- And finding the right side of the screen by getting the right side of the screen (camera offset plus screen width) and again diving by the tile size. Plus add 1 due an off-by-one error due to the way coordinates work.
+
+Inside this `for` loop, we have another `for` loop for the y value. Same `for` loop, but change `offset[0]` to `[1]` and width to height.
+
+Now we calcualte our location string with:
+`location = str(x) + ';' + str(y)`
+And then loop up to see if this location exists inside our `tilemap` dictionary, hence, we need to render it.
+Then we simply, reuse our `surface.blit` from before:
+`surface.blit(self.game.assets[tile['type']][tile['variant']], (tile['pos'][0] * self.tile_size - offset[0], tile['pos'][1] * self.tile_size - offset[1]))`
+
+For smaller levels, like ours, this is actually slightly slower in performance. Previously we were rendering all tiles at once, but now we are checking everytile position on the screen. Before, we had less tiles than amount of space on the screen, but once the level grows this optimisation will imporve performance. Again, the difference will be unnoticable for smaller games but it is good practise to optimise your game in case it does grow to be larger than expected. Also, it is good programming practise.
+
+## Animation
+
+[Chapter Link](https://www.youtube.com/watch?v=2gABYM5M0ww&t=117m50s)
+
