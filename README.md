@@ -460,3 +460,6 @@ For smaller levels, like ours, this is actually slightly slower in performance. 
 
 [Chapter Link](https://www.youtube.com/watch?v=2gABYM5M0ww&t=117m50s)
 
+## Level Editor
+
+[Chapter Link](https://www.youtube.com/watch?v=2gABYM5M0ww&t=142m22s)
