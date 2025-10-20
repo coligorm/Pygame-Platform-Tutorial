@@ -32,15 +32,47 @@ class Editor:
         # We had this scroll as an offset to anything we render below while running the game
         self.scroll = [0,0]
 
+        self.tile_list = list(self.assets)
+        self.tile_group = 0
+        self.tile_variant = 0
+
+        self.l_clicking = False
+        self.r_clicking = False
+        self.shift = False
+
     def run(self):
         while True:
             self.display.fill((0,0,0,0))
+
+            # Tile HUD to see current tile selected in Editor. set_alpha makes tile image slightly opaque
+            current_tile_img = self.assets[self.tile_list[self.tile_group]][self.tile_variant].copy()
+            current_tile_img.set_alpha(100)
+
+            self.display.blit(current_tile_img, (5, 5))
 
             # Eveything in Pygame needs to be created, even the option to 'Quit' the game
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 1:
+                        self.l_clicking = True
+                    if event.button == 3:
+                        self.r_clicking = True
+                    if self.shift:
+                        if event.button == 4:
+                            self.tile_variant = (self.tile_variant - 1) % len(self.assets[self.tile_list[self.tile_group]])
+                        if event.button == 5:
+                            self.tile_variant = (self.tile_variant + 1) % len(self.assets[self.tile_list[self.tile_group]])
+                    else:
+                        if event.button == 4:
+                            self.tile_group = (self.tile_group - 1) % len(self.tile_list)
+                            self.tile_variant = 0
+                        if event.button == 5:
+                            self.tile_group = (self.tile_group + 1) % len(self.tile_list)
+                            self.tile_variant = 0
 
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_LEFT or event.key == pygame.K_a:
@@ -51,6 +83,8 @@ class Editor:
                         self.movement[2] = True
                     if event.key == pygame.K_DOWN or event.key == pygame.K_s:
                         self.movement[3] = True
+                    if event.key == pygame.K_LSHIFT:
+                        self.shift = True
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_LEFT or event.key == pygame.K_a:
                         self.movement[0] = False
@@ -60,6 +94,8 @@ class Editor:
                         self.movement[2] = False
                     if event.key == pygame.K_DOWN or event.key == pygame.K_s:
                         self.movement[3] = False
+                    if event.key == pygame.K_LSHIFT:
+                        self.shift = False
             
             self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0,0))
             pygame.display.update()
