@@ -44,9 +44,28 @@ class Editor:
         while True:
             self.display.fill((0,0,0,0))
 
+            render_scroll = (int(self.scroll[0]), int(self.scroll[1]))
+
+            self.tilemap.render(self.display, offset=render_scroll)
+
             # Tile HUD to see current tile selected in Editor. set_alpha makes tile image slightly opaque
             current_tile_img = self.assets[self.tile_list[self.tile_group]][self.tile_variant].copy()
             current_tile_img.set_alpha(100)
+
+            # Get mouse pixel coordinates in respect to the window
+            mpos = pygame.mouse.get_pos()
+            # Since we are scaling up our pixels to fit display, we must divide by the render scale
+            mpos = (mpos[0] / RENDER_SCALE, mpos[1] / RENDER_SCALE)
+            # Get coordinates of mouse in terms of tile position
+            tile_pos = (int((mpos[0] + self.scroll[0]) // self.tilemap.tile_size), int((mpos[1] + self.scroll[1]) // self.tilemap.tile_size))
+
+            # When click, place current tile by adding it to the tilemap
+            if self.l_clicking:
+                self.tilemap.tilemap[str(tile_pos[0]) + ';' + str(tile_pos[1])] = {'type' : self.tile_list[self.tile_group], 'variant' : self.tile_variant, 'pos': tile_pos}
+            if self.r_clicking:
+                tile_loc = str(tile_pos[0] + ';' + str(tile_pos[1]))
+                if tile_loc in self.tilemap.tilemap:
+                    del self.tilemap.tilemap[tile_loc]
 
             self.display.blit(current_tile_img, (5, 5))
 
@@ -74,6 +93,12 @@ class Editor:
                             self.tile_group = (self.tile_group + 1) % len(self.tile_list)
                             self.tile_variant = 0
 
+                if event.type == pygame.MOUSEBUTTONUP:
+                    if event.button == 1:
+                        self.l_clicking = False
+                    if event.button == 3:
+                        self.r_clicking = False
+
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_LEFT or event.key == pygame.K_a:
                         self.movement[0] = True
@@ -85,6 +110,7 @@ class Editor:
                         self.movement[3] = True
                     if event.key == pygame.K_LSHIFT:
                         self.shift = True
+
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_LEFT or event.key == pygame.K_a:
                         self.movement[0] = False
@@ -96,7 +122,7 @@ class Editor:
                         self.movement[3] = False
                     if event.key == pygame.K_LSHIFT:
                         self.shift = False
-            
+
             self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0,0))
             pygame.display.update()
             self.clock.tick(60)

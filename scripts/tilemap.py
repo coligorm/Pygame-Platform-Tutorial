@@ -8,12 +8,6 @@ class Tilemap:
         self.tile_size = tile_size
         self.tilemap = {}
         self.offgrid_tiles = []
-
-        for i in range(10):
-            # Creating a dictionary of a horizontal line of grass tiles from 3 on x coord
-            self.tilemap[str(3 + i) + ';10'] = {'type': 'grass', 'variant': 1, 'pos': (3 + i, 10)}
-            # Creating a dictionary of a verticle line of stone tiles from 3 on x coord
-            self.tilemap['10;' + str(5 + i)] = {'type': 'stone', 'variant': 1, 'pos': (10, 5 + i)}
     
     def tiles_around(self, pos):
         tiles = []
