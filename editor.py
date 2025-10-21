@@ -28,6 +28,11 @@ class Editor:
 
         self.tilemap = Tilemap(self)
 
+        try:
+            self.tilemap.load('map.json')
+        except FileNotFoundError:
+            pass
+
         # Look at the scroll like the camera position
         # We had this scroll as an offset to anything we render below while running the game
         self.scroll = [0,0]
@@ -77,7 +82,7 @@ class Editor:
             if self.l_clicking and self.ongrid:
                 self.tilemap.tilemap[str(tile_pos[0]) + ';' + str(tile_pos[1])] = {'type' : self.tile_list[self.tile_group], 'variant' : self.tile_variant, 'pos': tile_pos}
             if self.r_clicking:
-                tile_loc = str(tile_pos[0] + ';' + str(tile_pos[1]))
+                tile_loc = str(tile_pos[0]) + ';' + str(tile_pos[1])
                 if tile_loc in self.tilemap.tilemap:
                     del self.tilemap.tilemap[tile_loc]
                 for tile in self.tilemap.offgrid_tiles.copy():
@@ -136,6 +141,8 @@ class Editor:
                         self.shift = True
                     if event.key == pygame.K_g:
                         self.ongrid = not self.ongrid # Note: if set to false, we would have to hold. Instead 'G' key will toggle the ongrid on/off
+                    if event.key == pygame.K_o:
+                        self.tilemap.save('map.json')
 
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_LEFT or event.key == pygame.K_a:
