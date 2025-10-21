@@ -40,6 +40,8 @@ class Editor:
         self.r_clicking = False
         self.shift = False
 
+        self.ongrid = True
+
     def run(self):
         while True:
             self.display.fill((0,0,0,0))
@@ -47,7 +49,7 @@ class Editor:
             # Move Camera
             self.scroll[0] += (self.movement[1] - self.movement[0]) * 2
             self.scroll[1] += (self.movement[3] - self.movement[2]) * 2
-            
+
             render_scroll = (int(self.scroll[0]), int(self.scroll[1]))
 
             self.tilemap.render(self.display, offset=render_scroll)
@@ -63,16 +65,26 @@ class Editor:
             # Get coordinates of mouse in terms of tile position on the grid (// self.tilemap.tile_size)
             tile_pos = (int((mpos[0] + self.scroll[0]) // self.tilemap.tile_size), int((mpos[1] + self.scroll[1]) // self.tilemap.tile_size))
 
-            # Overlay of where the next tile will go
-            # Takes above tile_pos and converts it back into pixel coords (multiply by tile size) and adjusting based on the camera for rendering
-            self.display.blit(current_tile_img, (tile_pos[0] * self.tilemap.tile_size - self.scroll[0], tile_pos[1] * self.tilemap.tile_size - self.scroll[1]))
+            if self.ongrid:
+                # Overlay of where the next on grid tile will go
+                # Takes above tile_pos and converts it back into pixel coords (multiply by tile size) and adjusting based on the camera for rendering
+                self.display.blit(current_tile_img, (tile_pos[0] * self.tilemap.tile_size - self.scroll[0], tile_pos[1] * self.tilemap.tile_size - self.scroll[1]))
+            else:
+                # Overlay for placing tile off-grid
+                self.display.blit(current_tile_img, mpos)
+            
             # When click, place current tile by adding it to the tilemap
-            if self.l_clicking:
+            if self.l_clicking and self.ongrid:
                 self.tilemap.tilemap[str(tile_pos[0]) + ';' + str(tile_pos[1])] = {'type' : self.tile_list[self.tile_group], 'variant' : self.tile_variant, 'pos': tile_pos}
             if self.r_clicking:
                 tile_loc = str(tile_pos[0] + ';' + str(tile_pos[1]))
                 if tile_loc in self.tilemap.tilemap:
                     del self.tilemap.tilemap[tile_loc]
+                for tile in self.tilemap.offgrid_tiles.copy():
+                    tile_img = self.assets[tile['type']][tile['variant']]
+                    tile_r = pygame.Rect(tile['pos'][0] - self.scroll[0], tile['pos'][1] - self.scroll[1], tile_img.get_width(), tile_img.get_height())
+                    if tile_r.collidepoint(mpos):
+                        self.tilemap.offgrid_tiles.remove(tile)
 
             self.display.blit(current_tile_img, (5, 5))
 
@@ -82,9 +94,12 @@ class Editor:
                     pygame.quit()
                     sys.exit()
 
+                # MOUSE CONTROLS
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
                         self.l_clicking = True
+                        if not self.ongrid:
+                            self.tilemap.offgrid_tiles.append({'type' : self.tile_list[self.tile_group], 'variant' : self.tile_variant, 'pos': (mpos[0] + self.scroll[0], mpos[1] + self.scroll[1])}) # Note: We add the coords of the scroll (camera) to convert where we are clicking in the display to where we want to click in the "world"
                     if event.button == 3:
                         self.r_clicking = True
                     if self.shift:
@@ -106,6 +121,7 @@ class Editor:
                     if event.button == 3:
                         self.r_clicking = False
 
+                # KEYBOARD CONTROLS
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_LEFT or event.key == pygame.K_a:
                         self.movement[0] = True
@@ -115,8 +131,11 @@ class Editor:
                         self.movement[2] = True
                     if event.key == pygame.K_DOWN or event.key == pygame.K_s:
                         self.movement[3] = True
+                    
                     if event.key == pygame.K_LSHIFT:
                         self.shift = True
+                    if event.key == pygame.K_g:
+                        self.ongrid = not self.ongrid # Note: if set to false, we would have to hold. Instead 'G' key will toggle the ongrid on/off
 
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_LEFT or event.key == pygame.K_a:
@@ -127,6 +146,7 @@ class Editor:
                         self.movement[2] = False
                     if event.key == pygame.K_DOWN or event.key == pygame.K_s:
                         self.movement[3] = False
+                    
                     if event.key == pygame.K_LSHIFT:
                         self.shift = False
 
