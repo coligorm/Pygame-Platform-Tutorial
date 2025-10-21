@@ -141,6 +141,8 @@ class Editor:
                         self.shift = True
                     if event.key == pygame.K_g:
                         self.ongrid = not self.ongrid # Note: if set to false, we would have to hold. Instead 'G' key will toggle the ongrid on/off
+                    if event.key == pygame.K_t:
+                        self.tilemap.autotile()
                     if event.key == pygame.K_o:
                         self.tilemap.save('map.json')
 
