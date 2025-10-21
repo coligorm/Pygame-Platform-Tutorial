@@ -5,15 +5,15 @@ NEIGHBOUR_OFFSETS = [(-1,0), (-1,-1), (0,-1), (1,-1), (1,0), (0,0), (-1,1), (0,1
 PHYSICS_TILES = {'grass', 'stone'}
 
 AUTOTILE_MAP = {
-    tuple(sorted[(1,0), (0,1)]) : 0,
-    tuple(sorted[(1,0), (0,1), (-1,0)]) : 1,
-    tuple(sorted[(-1,0), (0,1)]) : 2,
-    tuple(sorted[(-1,0), (0,-1), (0,1)]) : 3,
-    tuple(sorted[(-1,0), (0,-1)]) : 4,
-    tuple(sorted[(-1,0), (0,-1), (1,0)]) : 5,
-    tuple(sorted[(1,0), (0,-1)]) : 6,
-    tuple(sorted[(1,0), (0,-1), (0,1)]) : 7,
-    tuple(sorted[(1,0), (-1,0), (0,1), (0,-1)]) : 8
+    tuple(sorted([(1,0), (0,1)])) : 0,
+    tuple(sorted([(1,0), (0,1), (-1,0)])) : 1,
+    tuple(sorted([(-1,0), (0,1)])) : 2,
+    tuple(sorted([(-1,0), (0,-1), (0,1)])) : 3,
+    tuple(sorted([(-1,0), (0,-1)])) : 4,
+    tuple(sorted([(-1,0), (0,-1), (1,0)])) : 5,
+    tuple(sorted([(1,0), (0,-1)])) : 6,
+    tuple(sorted([(1,0), (0,-1), (0,1)])) : 7,
+    tuple(sorted([(1,0), (-1,0), (0,1), (0,-1)])) : 8
 }
 class Tilemap:
     def __init__(self, game, tile_size=16):
@@ -59,11 +59,11 @@ class Tilemap:
             for shift in [(1,0), (-1,0), (0,-1), (0,1)]:
                 check_loc = str(tile['pos'][0] + shift[0]) + ';' + str(tile['pos'][1] + shift[1])
                 if check_loc in self.tilemap:
-                    if self.tilemap[check_loc]['type'] == tile['tile']:
+                    if self.tilemap[check_loc]['type'] == tile['type']:
                         neighbours.add(shift)
             neighbours = tuple(sorted(neighbours))
             if (tile['type'] in PHYSICS_TILES) and (neighbours in AUTOTILE_MAP):
-                tile['variant'] = AUTOTILE_MAP[tile[neighbours]]
+                tile['variant'] = AUTOTILE_MAP[neighbours]
 
     def render(self, surface, offset=(0,0)):
         # Render the offgrid tile first, as they are in the background

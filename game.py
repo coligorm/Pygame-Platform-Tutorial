@@ -50,6 +50,7 @@ class Game:
         self.player = Player(self, (50, 50), (8, 15))
 
         self.tilemap = Tilemap(self)
+        self.tilemap.load('map.json')
 
         # Look at the scroll like the camera position
         # We had this scroll as an offset to anything we render below while running the game
