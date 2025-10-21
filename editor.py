@@ -56,9 +56,12 @@ class Editor:
             mpos = pygame.mouse.get_pos()
             # Since we are scaling up our pixels to fit display, we must divide by the render scale
             mpos = (mpos[0] / RENDER_SCALE, mpos[1] / RENDER_SCALE)
-            # Get coordinates of mouse in terms of tile position
+            # Get coordinates of mouse in terms of tile position on the grid (// self.tilemap.tile_size)
             tile_pos = (int((mpos[0] + self.scroll[0]) // self.tilemap.tile_size), int((mpos[1] + self.scroll[1]) // self.tilemap.tile_size))
 
+            # Overlay of where the next tile will go
+            # Takes above tile_pos and converts it back into pixel coords (multiply by tile size) and adjusting based on the camera for rendering
+            self.display.blit(current_tile_img, (tile_pos[0] * self.tilemap.tile_size - self.scroll[0], tile_pos[1] * self.tilemap.tile_size - self.scroll[1]))
             # When click, place current tile by adding it to the tilemap
             if self.l_clicking:
                 self.tilemap.tilemap[str(tile_pos[0]) + ';' + str(tile_pos[1])] = {'type' : self.tile_list[self.tile_group], 'variant' : self.tile_variant, 'pos': tile_pos}
